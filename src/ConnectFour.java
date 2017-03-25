@@ -176,19 +176,18 @@ public class ConnectFour {
      * @return
      */
     private static boolean checkHorizontal() {
-        for(int i = 1; i < 15; i += 2){
-            for(int j = 0; j < 3; j++){
+        for(int row = 0; row < 6; row++){
+            for(int col = 0; col < 7; col += 2){
                 if(
-                    (LAYOUT[j][i] != LAYOUT_EMPTY_ID)&&
-                    (LAYOUT[j+1][i] != LAYOUT_EMPTY_ID)&&
-                    (LAYOUT[j+2][i] != LAYOUT_EMPTY_ID)&&
-                    (LAYOUT[j+3][i] != LAYOUT_EMPTY_ID)&&
-                        (
-                            (LAYOUT[j][i] == LAYOUT[j+1][i])&&
-                            (LAYOUT[j+1][i] == LAYOUT[j+2][i])&&
-                            (LAYOUT[j+2][i] == LAYOUT[j+3][i])
-                        )
-                    )
+                    (LAYOUT[row][col+1] != LAYOUT_EMPTY_ID)&&
+                    (LAYOUT[row][col+3] != LAYOUT_EMPTY_ID)&&
+                    (LAYOUT[row][col+5] != LAYOUT_EMPTY_ID)&&
+                    (LAYOUT[row][col+7] != LAYOUT_EMPTY_ID)&&
+                    (
+                        (LAYOUT[row][col+1] == LAYOUT[row][col+3])&&
+                        (LAYOUT[row][col+3] == LAYOUT[row][col+5])&&
+                        (LAYOUT[row][col+5] == LAYOUT[row][col+7])
+                    ))
                     return true;
             }
         }
@@ -200,20 +199,19 @@ public class ConnectFour {
      * @return
      */
     private static boolean checkVertical() {
-        for(int i = 0; i < 6; i++){
-            for(int j = 0; j < 7; j += 2){
+        for(int col = 1; col < 15; col += 2){
+            for(int row = 0; row < 3; row++){
                 if(
-                    (LAYOUT[i][j+1] != LAYOUT_EMPTY_ID)&&
-                    (LAYOUT[i][j+3] != LAYOUT_EMPTY_ID)&&
-                    (LAYOUT[i][j+5] != LAYOUT_EMPTY_ID)&&
-                    (LAYOUT[i][j+7] != LAYOUT_EMPTY_ID)&&
+                    (LAYOUT[row][col] != LAYOUT_EMPTY_ID)&&
+                    (LAYOUT[row+1][col] != LAYOUT_EMPTY_ID)&&
+                    (LAYOUT[row+2][col] != LAYOUT_EMPTY_ID)&&
+                    (LAYOUT[row+3][col] != LAYOUT_EMPTY_ID)&&
                     (
-                        (LAYOUT[i][j+1] == LAYOUT[i][j+3])&&
-                        (LAYOUT[i][j+3] == LAYOUT[i][j+5])&&
-                        (LAYOUT[i][j+5] == LAYOUT[i][j+7])
-                    )
-                )
-                return true;
+                        (LAYOUT[row][col] == LAYOUT[row+1][col])&&
+                        (LAYOUT[row+1][col] == LAYOUT[row+2][col])&&
+                        (LAYOUT[row+2][col] == LAYOUT[row+3][col])
+                    ))
+                    return true;
             }
         }
         return false;
@@ -224,35 +222,33 @@ public class ConnectFour {
      * @return
      */
     private static boolean checkDiagonal() {
-        for(int i = 0; i < 3; i++){
-            for(int j = 1; j < 9; j += 2){
+        for(int row = 0; row < 3; row++){
+            for(int col = 1; col < 9; col += 2){
                 if(
-                    (LAYOUT[i][j] != LAYOUT_EMPTY_ID)&&
-                    (LAYOUT[i+1][j+2] != LAYOUT_EMPTY_ID)&&
-                    (LAYOUT[i+2][j+4] != LAYOUT_EMPTY_ID)&&
-                    (LAYOUT[i+3][j+6] != LAYOUT_EMPTY_ID)&&
-                        (
-                            (LAYOUT[i][j] == LAYOUT[i+1][j+2])&&
-                            (LAYOUT[i+1][j+2] == LAYOUT[i+2][j+4])&&
-                            (LAYOUT[i+2][j+4] == LAYOUT[i+3][j+6])
-                        )
-                    )
+                    (LAYOUT[row][col] != LAYOUT_EMPTY_ID)&&
+                    (LAYOUT[row+1][col+2] != LAYOUT_EMPTY_ID)&&
+                    (LAYOUT[row+2][col+4] != LAYOUT_EMPTY_ID)&&
+                    (LAYOUT[row+3][col+6] != LAYOUT_EMPTY_ID)&&
+                    (
+                        (LAYOUT[row][col] == LAYOUT[row+1][col+2])&&
+                        (LAYOUT[row+1][col+2] == LAYOUT[row+2][col+4])&&
+                        (LAYOUT[row+2][col+4] == LAYOUT[row+3][col+6])
+                    ))
                     return true;
             }
         }
-        for(int i = 0; i < 3; i++){
-            for(int j = 7; j < 15; j += 2){
+        for(int row = 0; row < 3; row++){
+            for(int col = 7; col < 15; col += 2){
                 if(
-                    (LAYOUT[i][j] != LAYOUT_EMPTY_ID)&&
-                    (LAYOUT[i+1][j-2] != LAYOUT_EMPTY_ID)&&
-                    (LAYOUT[i+2][j-4] != LAYOUT_EMPTY_ID)&&
-                    (LAYOUT[i+3][j-6] !=LAYOUT_EMPTY_ID)&&
-                        (
-                            (LAYOUT[i][j] == LAYOUT[i+1][j-2])&&
-                            (LAYOUT[i+1][j-2] == LAYOUT[i+2][j-4])&&
-                            (LAYOUT[i+2][j-4] == LAYOUT[i+3][j-6])
-                        )
-                    )
+                    (LAYOUT[row][col] != LAYOUT_EMPTY_ID)&&
+                    (LAYOUT[row+1][col-2] != LAYOUT_EMPTY_ID)&&
+                    (LAYOUT[row+2][col-4] != LAYOUT_EMPTY_ID)&&
+                    (LAYOUT[row+3][col-6] !=LAYOUT_EMPTY_ID)&&
+                    (
+                        (LAYOUT[row][col] == LAYOUT[row+1][col-2])&&
+                        (LAYOUT[row+1][col-2] == LAYOUT[row+2][col-4])&&
+                        (LAYOUT[row+2][col-4] == LAYOUT[row+3][col-6])
+                    ))
                     return true;
             }
         }
