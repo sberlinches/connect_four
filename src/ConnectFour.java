@@ -1,63 +1,82 @@
 import java.util.Scanner;
 
 /**
+ * Connect Four
+ * Is a two-player connection game in which the players first choose a color and then take turns dropping colored discs
+ * from the top into a seven-column, six-row vertically suspended grid. The pieces fall straight down, occupying the
+ * next available space within the column. The objective of the game is to connect four of one’s own discs of the same
+ * color next to each other vertically, horizontally, or diagonally before your opponent.
  *
+ * @author  Ayaka Adachi [ID:, Sec:005]
+ * @author  Sergio Berlinches [ID:100291288, Sec:005]
+ * @since   2017-03-25
  */
 public class ConnectFour {
 
-    private static final int LAYOUT_EMPTY_ID            = 0;
-    private static final int LAYOUT_LINE_ID             = 1;
+    private static final int COLUMNS                    = 7;
+    private static final int COLUMNS_AND_PIPES          = COLUMNS * 2 + 1;
+    private static final int ROWS                       = 6;
+    private static final int MATRIX_EMPTY_ID            = 0;
+    private static final int MATRIX_PIPE_ID             = 1;
     private static final int YELLOW_PLAYER_ID           = 2;
     private static final int RED_PLAYER_ID              = 3;
-    private static final char LAYOUT_EMPTY_SIGN         = ' ';
-    private static final char LAYOUT_LINE_SIGN          = '|';
-    private static final char YELLOW_PLAYER_SIGN        = 'Y';
-    private static final char RED_PLAYER_SIGN           = 'R';
+    private static final int WINNER_ID                  = 4;
+    private static final char MATRIX_EMPTY_DECO         = ' ';
+    private static final char MATRIX_PIPE_DECO          = '|';
+    private static final char YELLOW_PLAYER_DECO        = 'Y';
+    private static final char RED_PLAYER_DECO           = 'R';
+    private static final char WINNER_PLAYER_DECO        = '$';
     private static final String YELLOW_PLAYER_NAME      = "yellow";
     private static final String RED_PLAYER_NAME         = "red";
     private static final String MOVE_MSG                = "Select an empty column (0-6) to drop a %s disk into:";
     private static final String INVALID_MOVE_MSG        = "Sorry, you have entered an invalid column number.";
     private static final String WINNER_MSG              = "Congratulations, the %s player wins!!!";
     private static Scanner scanner                      = new Scanner(System.in);
-    private static int[][] LAYOUT                       = setLayout();
+    private static int[][] MATRIX                       = createMatrix();
     private static int TURN                             = whoIsFirst();
 
     /**
-     *
-     * @param arg
+     * @param arg arguments
      */
     public static void main(String[] arg) {
 
         do {
-            printLayout();
+            printMatrix();
             promptForMove();
             swapTurn();
         } while(!isWinner());
 
-        printLayout();
+        swapTurn();
+        printMatrix();
         printWinner();
     }
 
     /**
+     * This method initializes the matrix.
      *
-     * @return
+     * @return The generated matrix.
      */
-    private static int[][] setLayout() {
+    private static int[][] createMatrix() {
 
-        int[][] layout = new int[6][15];
+        // 1. Initializes the matrix.
+        // [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] x6
+        int[][] matrix = new int[ROWS][COLUMNS_AND_PIPES];
 
-        for(int[] row: layout) {
-            for(int j = 0; j < row.length; j++){
-                row[j] = (isEven(j))? LAYOUT_LINE_ID: LAYOUT_EMPTY_ID;
+        // 2. Fills the matrix interchanging between the references of whitespaces and lines.
+        // [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1] x6
+        for(int[] row: matrix) {
+            for(int col = 0; col < row.length; col++){
+                row[col] = (isEven(col))? MATRIX_PIPE_ID: MATRIX_EMPTY_ID;
             }
         }
 
-        return layout;
+        return matrix;
     }
 
     /**
-     *
-     * @return
+     * This method randomly determines who is first at the beginning of the game.
+     * 
+     * @return The player ID who starts the game.
      */
     private static int whoIsFirst() {
         return randomInteger(YELLOW_PLAYER_ID, RED_PLAYER_ID);
@@ -80,24 +99,29 @@ public class ConnectFour {
     }
 
     /**
-     *
+     * This method reads the matrix global variable and prints it on screen.
      */
-    private static void printLayout() {
+    private static void printMatrix() {
 
-        for(int[] row: LAYOUT) {
+        // 1. Iterates over the matrix reading row by row and column by column.
+        for(int[] row: MATRIX) {
             for(int col: row) {
+                // 2. Switches the references by the final decorations.
                 switch (col) {
-                    case LAYOUT_EMPTY_ID:
-                        System.out.print(LAYOUT_EMPTY_SIGN);
+                    case MATRIX_EMPTY_ID:
+                        System.out.print(MATRIX_EMPTY_DECO);
                         break;
-                    case LAYOUT_LINE_ID:
-                        System.out.print(LAYOUT_LINE_SIGN);
+                    case MATRIX_PIPE_ID:
+                        System.out.print(MATRIX_PIPE_DECO);
                         break;
                     case YELLOW_PLAYER_ID:
-                        System.out.print(colorize(YELLOW_PLAYER_SIGN, YELLOW_PLAYER_NAME));
+                        System.out.print(colorize(YELLOW_PLAYER_DECO, YELLOW_PLAYER_NAME));
                         break;
                     case RED_PLAYER_ID:
-                        System.out.print(colorize(RED_PLAYER_SIGN, RED_PLAYER_NAME));
+                        System.out.print(colorize(RED_PLAYER_DECO, RED_PLAYER_NAME));
+                        break;
+                    case WINNER_ID:
+                        System.out.print(WINNER_PLAYER_DECO);
                         break;
                 }
             }
@@ -118,7 +142,7 @@ public class ConnectFour {
             move = scanner.nextInt();
         } while (!isValidMove(move));
 
-        // 2. submit the move to the layout
+        // 2. submit the move to the matrix.
         submitMove(move);
     }
 
@@ -141,53 +165,62 @@ public class ConnectFour {
     }
 
     /**
+     * This method submits the introduced move into its position on the matrix.
      *
-     * @param move
+     * @param move Introduced move.
      */
     private static void submitMove(int move){
 
-        move = 2 * move + 1;
+        // 1. Adjusts the move to fit with the whitespaces of the matrix
+        // move = 0 * 2 + 1 = 1
+        // [1, X, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
+        move = move * 2 + 1;
 
-        for(int row = 5; row >= 0; row--) {
-            if(LAYOUT[row][move] == LAYOUT_EMPTY_ID){
-                LAYOUT[row][move] = (TURN == YELLOW_PLAYER_ID)? YELLOW_PLAYER_ID: RED_PLAYER_ID;
+        // 2. Iterates from the bottom of the matrix to the top
+        for(int row = ROWS - 1; row >= 0; row--) {
+            // 2.1 If the requested position is empty, fill it with the current player ID, and stop the iteration.
+            if(MATRIX[row][move] == MATRIX_EMPTY_ID){
+                MATRIX[row][move] = getPlayerID();
                 break;
             }
         }
     }
 
     /**
-     *
+     * This method swaps the turn from one player to another
      */
     private static void swapTurn() {
+        // 1. If the yellow's player turn, changes to the red.
         TURN = (TURN == YELLOW_PLAYER_ID)? RED_PLAYER_ID: YELLOW_PLAYER_ID;
     }
 
     /**
+     * This method determines and returns after each move, if the current player is winner or not.
      *
-     * @return
+     * @return True is the current player is winner.
      */
     private static boolean isWinner() {
         // TODO: Each of these methods must submit with positions are the winners.
-        return (checkHorizontal() || checkVertical() || checkDiagonal());
+        return (checkRows() || checkColumns() || checkDiagonals());
     }
 
     /**
+     * This method check every row, looking for four consecutive IDs of the same player.
      *
-     * @return
+     * @return True if there are four consecutive IDs of the same player.
      */
-    private static boolean checkHorizontal() {
-        for(int row = 0; row < 6; row++){
-            for(int col = 0; col < 7; col += 2){
+    private static boolean checkRows() {
+        for(int row = 0; row < ROWS; row++){
+            for(int col = 0; col < COLUMNS; col += 2){
                 if(
-                    (LAYOUT[row][col+1] != LAYOUT_EMPTY_ID)&&
-                    (LAYOUT[row][col+3] != LAYOUT_EMPTY_ID)&&
-                    (LAYOUT[row][col+5] != LAYOUT_EMPTY_ID)&&
-                    (LAYOUT[row][col+7] != LAYOUT_EMPTY_ID)&&
+                    (MATRIX[row][col+1] != MATRIX_EMPTY_ID)&&
+                    (MATRIX[row][col+3] != MATRIX_EMPTY_ID)&&
+                    (MATRIX[row][col+5] != MATRIX_EMPTY_ID)&&
+                    (MATRIX[row][col+7] != MATRIX_EMPTY_ID)&&
                     (
-                        (LAYOUT[row][col+1] == LAYOUT[row][col+3])&&
-                        (LAYOUT[row][col+3] == LAYOUT[row][col+5])&&
-                        (LAYOUT[row][col+5] == LAYOUT[row][col+7])
+                        (MATRIX[row][col+1] == MATRIX[row][col+3])&&
+                        (MATRIX[row][col+3] == MATRIX[row][col+5])&&
+                        (MATRIX[row][col+5] == MATRIX[row][col+7])
                     ))
                     return true;
             }
@@ -196,21 +229,22 @@ public class ConnectFour {
     }
 
     /**
+     * This method check every column, looking for four consecutive IDs of the same player.
      *
-     * @return
+     * @return True if there are four consecutive IDs of the same player.
      */
-    private static boolean checkVertical() {
+    private static boolean checkColumns() {
         for(int col = 1; col < 15; col += 2){
             for(int row = 0; row < 3; row++){
                 if(
-                    (LAYOUT[row][col] != LAYOUT_EMPTY_ID)&&
-                    (LAYOUT[row+1][col] != LAYOUT_EMPTY_ID)&&
-                    (LAYOUT[row+2][col] != LAYOUT_EMPTY_ID)&&
-                    (LAYOUT[row+3][col] != LAYOUT_EMPTY_ID)&&
+                    (MATRIX[row][col] != MATRIX_EMPTY_ID)&&
+                    (MATRIX[row+1][col] != MATRIX_EMPTY_ID)&&
+                    (MATRIX[row+2][col] != MATRIX_EMPTY_ID)&&
+                    (MATRIX[row+3][col] != MATRIX_EMPTY_ID)&&
                     (
-                        (LAYOUT[row][col] == LAYOUT[row+1][col])&&
-                        (LAYOUT[row+1][col] == LAYOUT[row+2][col])&&
-                        (LAYOUT[row+2][col] == LAYOUT[row+3][col])
+                        (MATRIX[row][col] == MATRIX[row+1][col])&&
+                        (MATRIX[row+1][col] == MATRIX[row+2][col])&&
+                        (MATRIX[row+2][col] == MATRIX[row+3][col])
                     ))
                     return true;
             }
@@ -219,36 +253,37 @@ public class ConnectFour {
     }
 
     /**
+     * This method check every diagonal, looking for four consecutive IDs of the same player.
      *
-     * @return
+     * @return True if there are four consecutive IDs of the same player.
      */
-    private static boolean checkDiagonal() {
+    private static boolean checkDiagonals() {
         for(int row = 0; row < 3; row++){
             for(int col = 1; col < 9; col += 2){
                 if(
-                    (LAYOUT[row][col] != LAYOUT_EMPTY_ID)&&
-                    (LAYOUT[row+1][col+2] != LAYOUT_EMPTY_ID)&&
-                    (LAYOUT[row+2][col+4] != LAYOUT_EMPTY_ID)&&
-                    (LAYOUT[row+3][col+6] != LAYOUT_EMPTY_ID)&&
+                    (MATRIX[row][col] != MATRIX_EMPTY_ID)&&
+                    (MATRIX[row+1][col+2] != MATRIX_EMPTY_ID)&&
+                    (MATRIX[row+2][col+4] != MATRIX_EMPTY_ID)&&
+                    (MATRIX[row+3][col+6] != MATRIX_EMPTY_ID)&&
                     (
-                        (LAYOUT[row][col] == LAYOUT[row+1][col+2])&&
-                        (LAYOUT[row+1][col+2] == LAYOUT[row+2][col+4])&&
-                        (LAYOUT[row+2][col+4] == LAYOUT[row+3][col+6])
+                        (MATRIX[row][col] == MATRIX[row+1][col+2])&&
+                        (MATRIX[row+1][col+2] == MATRIX[row+2][col+4])&&
+                        (MATRIX[row+2][col+4] == MATRIX[row+3][col+6])
                     ))
                     return true;
             }
         }
         for(int row = 0; row < 3; row++){
-            for(int col = 7; col < 15; col += 2){
+            for(int col = COLUMNS; col < COLUMNS_AND_PIPES; col += 2){
                 if(
-                    (LAYOUT[row][col] != LAYOUT_EMPTY_ID)&&
-                    (LAYOUT[row+1][col-2] != LAYOUT_EMPTY_ID)&&
-                    (LAYOUT[row+2][col-4] != LAYOUT_EMPTY_ID)&&
-                    (LAYOUT[row+3][col-6] !=LAYOUT_EMPTY_ID)&&
+                    (MATRIX[row][col] != MATRIX_EMPTY_ID)&&
+                    (MATRIX[row+1][col-2] != MATRIX_EMPTY_ID)&&
+                    (MATRIX[row+2][col-4] != MATRIX_EMPTY_ID)&&
+                    (MATRIX[row+3][col-6] !=MATRIX_EMPTY_ID)&&
                     (
-                        (LAYOUT[row][col] == LAYOUT[row+1][col-2])&&
-                        (LAYOUT[row+1][col-2] == LAYOUT[row+2][col-4])&&
-                        (LAYOUT[row+2][col-4] == LAYOUT[row+3][col-6])
+                        (MATRIX[row][col] == MATRIX[row+1][col-2])&&
+                        (MATRIX[row+1][col-2] == MATRIX[row+2][col-4])&&
+                        (MATRIX[row+2][col-4] == MATRIX[row+3][col-6])
                     ))
                     return true;
             }
@@ -257,36 +292,46 @@ public class ConnectFour {
     }
 
     /**
-     *
+     * This method prints the winner message.
      */
     private static void printWinner() {
-        swapTurn();
-        String playerName = getPlayerName();
-        System.out.printf(WINNER_MSG, playerName);
+        System.out.printf(WINNER_MSG, getPlayerName());
     }
 
     /**
+     * This method, according with the current turn, returns the player name.
      *
-     * @return
+     * @return The player name.
      */
     private static String getPlayerName() {
         return  (TURN == YELLOW_PLAYER_ID)? YELLOW_PLAYER_NAME: RED_PLAYER_NAME;
     }
 
     /**
+     * This method, according with the current turn, returns the player ID.
      *
-     * @param num
-     * @return
+     * @return The player ID.
+     */
+    private static int getPlayerID() {
+        return  (TURN == YELLOW_PLAYER_ID)? YELLOW_PLAYER_ID: RED_PLAYER_ID;
+    }
+
+    /**
+     * This method determines and returns if the number introduced is even or not
+     *
+     * @param num   The number to be evaluated.
+     * @return      True if the number is even.
      */
     private static boolean isEven(int num) {
         return (num % 2 == 0);
     }
 
     /**
-     *
-     * @param input
-     * @param color
-     * @return
+     * This method changes the font color.
+     * 
+     * @param input The character.
+     * @param color The desired color [red, yellow]
+     * @return      The character with the color changed.
      */
     private static String colorize(char input, String color) {
 
@@ -301,6 +346,7 @@ public class ConnectFour {
                 colorId = 33;
         }
 
+        // 1. clear the previous format and add the desired color.
         String clearFormat  = (char)27 + "[" + 0 + "m";
         String addColor     = (char)27 + "[" + colorId + "m";
 
