@@ -28,7 +28,7 @@ public class ConnectFour {
     private static final char WINNER_PLAYER_DECO        = '$';
     private static final String YELLOW_PLAYER_NAME      = "yellow";
     private static final String RED_PLAYER_NAME         = "red";
-    private static final String MOVE_MSG                = "Select an empty column (0-6) to drop a %s disk into:";
+    private static final String MOVE_MSG                = "Select an empty column (0-%d) to drop a %s disk into:";
     private static final String INVALID_MOVE_MSG        = "Sorry, you have entered an invalid column number.";
     private static final String WINNER_MSG              = "Congratulations, the %s player wins!!!";
     private static Scanner scanner                      = new Scanner(System.in);
@@ -138,7 +138,7 @@ public class ConnectFour {
 
         // 1. Prompt for a move until the user enter a valid move.
         do {
-            System.out.println(String.format(MOVE_MSG, getPlayerName()));
+            System.out.println(String.format(MOVE_MSG, COLUMNS - 1, getPlayerName()));
             move = scanner.nextInt();
         } while (!isValidMove(move));
 
@@ -156,7 +156,7 @@ public class ConnectFour {
 
         // 1. Check if the move is within the column range.
         // TODO check the if it's within the row range.
-        boolean isValidMove = (move >= 0 && move <= 6);
+        boolean isValidMove = (move >= 0 && move < COLUMNS);
 
         // 2. If It's an invalid move, prints a message.
         if(!isValidMove) System.out.println(INVALID_MOVE_MSG);
