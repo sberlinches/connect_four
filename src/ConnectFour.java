@@ -1,147 +1,279 @@
 import java.util.Scanner;
+
+/**
+ *
+ */
 public class ConnectFour {
 
+    private static final int LAYOUT_EMPTY_ID            = 0;
+    private static final int LAYOUT_LINE_ID             = 1;
+    private static final int YELLOW_PLAYER_ID           = 2;
+    private static final int RED_PLAYER_ID              = 3;
+    private static final char LAYOUT_EMPTY_SIGN         = ' ';
+    private static final char LAYOUT_LINE_SIGN          = '|';
+    private static final char YELLOW_PLAYER_SIGN        = 'Y';
+    private static final char RED_PLAYER_SIGN           = 'R';
+    private static final String YELLOW_PLAYER_NAME      = "yellow";
+    private static final String RED_PLAYER_NAME         = "red";
+    private static final String MOVE_MSG                = "Select an empty column (0-6) to drop a %s disk into:";
+    private static final String INVALID_MOVE_MSG        = "Sorry, you have entered an invalid column number.";
+    private static final String WINNER_MSG              = "Congratulations, the %s player wins!!!";
+    private static Scanner scanner                      = new Scanner(System.in);
+    private static int[][] LAYOUT                       = setLayout();
+    private static int TURN                             = whoIsFirst();
+
+    /**
+     *
+     * @param arg
+     */
     public static void main(String[] arg) {
-	printPattern();
+
+        do {
+            printLayout();
+            promptForMove();
+            swapTurn();
+        } while(!isWinner());
+
+        printLayout();
+        printWinner();
     }
- /** This method diplay the all resulut and pattern.
- */
-    public static void printPattern(){
-    	String[][] arr = Pattern();
-		boolean loop = true;
-		int count = 0;
-		makePattern(arr);
-		while(loop){
-			if(count % 2 == 0)
-				printYellow(arr);
-			else
-				printRed(arr);
-			count++;
-			makePattern(arr);
-			if(checkWinner(arr) != null){
-				if(checkWinner(arr) == "Y")
-					System.out.println("The yellow player won.");
-				else if(checkWinner(arr) == "R")
-					System.out.println("The red player won.");
-				else()
-					System.out.println("Draw");
-				loop = false;
-			}
-		
-		}
-		
-	
+
+    /**
+     *
+     * @return
+     */
+    private static int[][] setLayout() {
+
+        int[][] layout = new int[6][15];
+
+        for(int[] row: layout) {
+            for(int j = 0; j < row.length; j++){
+                row[j] = (j % 2 == 0)? LAYOUT_LINE_ID: LAYOUT_EMPTY_ID;
+            }
+        }
+
+        return layout;
     }
-/** This method make a pattern.
-* @return arr 
-*/
-    public static String[][] Pattern(){
-		String[][] arr = new String[6][15];
-		for(int i = 0; i < arr.length; i++){
-			for(int j = 0; j < arr[i].length; j++){
-				if(j % 2 == 0)
-					arr[i][j] = "|";
-				else 
-					arr[i][j] = " ";
-			}
-		
-		}
-		return arr;
-	}
-/** This method display the pattern.
-*@param arr represents the row and the clomun
 
-*/
-	public static void makePattern(String[][] arr){
-		for(int i = 0; i < arr.length; i++){
-			for(int j = 0; j < arr[i].length; j++){
-				System.out.print(arr[i][j]);
-			}
-			System.out.println();
-		}
-	}
-/** This method display the yellow player's turn.
-*@param arr represents the row and the clomun
-*/
-	public static void printYellow(String[][] arr){
-		Scanner sc = new Scanner(System.in);
-		System.out.println("Select an empty column (0 - 6) to drop a yellow disk into:");
-		int num = 2 * sc.nextInt() + 1;
-		if(num > 7)
-			System.out.println("Try again");
-		for(int i = 5; i >= 0; i--){
-			if(arr[i][num] == " "){
-				arr[i][num] = "Y";
-				break;
-			}
-			
-	
-		}
-	
-	}
-/** This method display the red player's turn.
-*@param arr represents the row and the clomun
-*/
-	public static void printRed(String[][] arr){
-		Scanner sc = new Scanner(System.in);
-		System.out.println("Select an empty column (0 - 6) to drop a red disk into:");
-		int num = 2 * sc.nextInt() + 1;
-		for(int i = 5; i >= 0; i--){
-			if(arr[i][num] == " "){
-				arr[i][num] = "R";
-				break;
-			}
-			
-	
-		}
-		
-	
-	}
-/** This method check who the winner is line by line
+    /**
+     *
+     * @return
+     */
+    private static int whoIsFirst() {
+        return randomInteger(YELLOW_PLAYER_ID, RED_PLAYER_ID);
+    }
 
+    /**
+     * This method generates a random integer within the provided range.
+     *
+     * @param min   Minimum value in the range.
+     * @param max   Maximum value in the range.
+     * @return      Random integer within min and max.
+     */
+    private static int randomInteger(int min, int max) {
 
-*/
-	public static  String checkWinner(String[][] arr){
-		for(int i = 0; i < 6; i++){
-			//check the vertical line
-			for(int j = 0; j < 7; j += 2){
-				if((arr[i][j+1] != " ")&&(arr[i][j+3] != " ")&&(arr[i][j+5] != " ")&&(arr[i][j+7] != " ")
-				&&((arr[i][j+1] == arr[i][j+3])&&(arr[i][j+3] == arr[i][j+5])&&(arr[i][j+5] == arr[i][j+7])))
-				
-				return arr[i][j];
-			
-			}
-		
-		}
-		//check the horizontal line.
-		for(int i = 1; i < 15; i += 2){
-			for(int j = 0; j < 3; j++){
-				if((arr[j][i] != " ")&&(arr[j+1][i] != " ")&&(arr[j+2][i] != " ")&&(arr[j+3][i] != " ")
-				&&((arr[j][i] == arr[j+1][i])&&(arr[j+1][i] == arr[j+2][i])&&(arr[j+2][i] == arr[j+3][i])))
-				return arr[j][i];
-			}
-		}
-		//check the diagonal
-		for(int i = 0; i < 3; i++){
-			for(int j = 1; j < 9; j += 2){
-				if((arr[i][j] != " ")&&(arr[i+1][j+2] != " ")&&(arr[i+2][j+4] != " ")&&(arr[i+3][j+6] != " ")
-				&&((arr[i][j] == arr[i+1][j+2])&&(arr[i+1][j+2] == arr[i+2][j+4])&&(arr[i+2][j+4] == arr[i+3][j+6])))
-				return arr[i][j];
-			
-			}
-		}
-		//check the diagonal too
-		for(int i = 0; i < 3; i++){
-			for(int j = 7; j < 15; j += 2){
-				if((arr[i][j] != " ")&&(arr[i+1][j-2] != " ")&&(arr[i+2][j-4] != " ")&&(arr[i+3][j-6] != " ")
-				&&((arr[i][j] == arr[i+1][j-2])&&(arr[i+1][j-2] == arr[i+2][j-4])&&(arr[i+2][j-4] == arr[i+3][j-6])))
-				return arr[i][j];
-			}
-		
-		}
-	    return null;
-	
-	}
+        // random() method returns a random number between 0.0 and 0.999.
+        // Multiplying by 4, gets a number in the range of 0.0 and 4.999.
+        // Subtracting by 2 the multiplier and add it again to the result of the multiplication,
+        // gets a number in the range of 2.0 and 4.999.
+        return (int) Math.round(Math.random() * (max - min) + min);
+    }
+
+    /**
+     *
+     */
+    private static void printLayout() {
+
+        for(int[] row: LAYOUT) {
+            for(int col: row) {
+                switch (col) {
+                    case LAYOUT_EMPTY_ID:
+                        System.out.print(LAYOUT_EMPTY_SIGN);
+                        break;
+                    case LAYOUT_LINE_ID:
+                        System.out.print(LAYOUT_LINE_SIGN);
+                        break;
+                    case YELLOW_PLAYER_ID:
+                        System.out.print(YELLOW_PLAYER_SIGN);
+                        break;
+                    case RED_PLAYER_ID:
+                        System.out.print(RED_PLAYER_SIGN);
+                        break;
+                }
+            }
+            System.out.println();
+        }
+    }
+
+    /**
+     *
+     */
+    private static void promptForMove() {
+
+        int move;
+        String playerName = getPlayerName();
+
+        // 1. Prompt for a move until the user entered a valid move.
+        do {
+            System.out.println(String.format(MOVE_MSG, playerName));
+            move = scanner.nextInt();
+        } while (!isValidMove(move));
+
+        setMove(move, TURN);
+    }
+
+    /**
+     * Checks if the entered move is valid.
+     *
+     * @param move  Move to be evaluated.
+     * @return      If the move is valid or not.
+     */
+    private static boolean isValidMove(int move) {
+
+        boolean isValidMove = (move >= 0 && move <= 6);
+
+        if(!isValidMove)
+            System.out.println(INVALID_MOVE_MSG);
+
+        return isValidMove;
+    }
+
+    /**
+     *
+     * @param playerMove
+     * @param turn
+     */
+    private static void setMove(int playerMove, int turn){
+
+        playerMove = 2 * playerMove + 1;
+
+        for(int row = 5; row >= 0; row--) {
+            if(LAYOUT[row][playerMove] == LAYOUT_EMPTY_ID){
+                LAYOUT[row][playerMove] = (turn == YELLOW_PLAYER_ID)? YELLOW_PLAYER_ID: RED_PLAYER_ID;
+                break;
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    private static void swapTurn() {
+        TURN = (TURN == YELLOW_PLAYER_ID)? RED_PLAYER_ID: YELLOW_PLAYER_ID;
+    }
+
+    /**
+     *
+     * @return
+     */
+    private static boolean isWinner() {
+        return (checkHorizontal() || checkVertical() || checkDiagonal());
+    }
+
+    /**
+     *
+     * @return
+     */
+    private static boolean checkHorizontal() {
+        for(int i = 1; i < 15; i += 2){
+            for(int j = 0; j < 3; j++){
+                if(
+                    (LAYOUT[j][i] != LAYOUT_EMPTY_ID)&&
+                    (LAYOUT[j+1][i] != LAYOUT_EMPTY_ID)&&
+                    (LAYOUT[j+2][i] != LAYOUT_EMPTY_ID)&&
+                    (LAYOUT[j+3][i] != LAYOUT_EMPTY_ID)&&
+                        (
+                            (LAYOUT[j][i] == LAYOUT[j+1][i])&&
+                            (LAYOUT[j+1][i] == LAYOUT[j+2][i])&&
+                            (LAYOUT[j+2][i] == LAYOUT[j+3][i])
+                        )
+                    )
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @return
+     */
+    private static boolean checkVertical() {
+        for(int i = 0; i < 6; i++){
+            for(int j = 0; j < 7; j += 2){
+                if(
+                    (LAYOUT[i][j+1] != LAYOUT_EMPTY_ID)&&
+                    (LAYOUT[i][j+3] != LAYOUT_EMPTY_ID)&&
+                    (LAYOUT[i][j+5] != LAYOUT_EMPTY_ID)&&
+                    (LAYOUT[i][j+7] != LAYOUT_EMPTY_ID)&&
+                    (
+                        (LAYOUT[i][j+1] == LAYOUT[i][j+3])&&
+                        (LAYOUT[i][j+3] == LAYOUT[i][j+5])&&
+                        (LAYOUT[i][j+5] == LAYOUT[i][j+7])
+                    )
+                )
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @return
+     */
+    private static boolean checkDiagonal() {
+        for(int i = 0; i < 3; i++){
+            for(int j = 1; j < 9; j += 2){
+                if(
+                    (LAYOUT[i][j] != LAYOUT_EMPTY_ID)&&
+                    (LAYOUT[i+1][j+2] != LAYOUT_EMPTY_ID)&&
+                    (LAYOUT[i+2][j+4] != LAYOUT_EMPTY_ID)&&
+                    (LAYOUT[i+3][j+6] != LAYOUT_EMPTY_ID)&&
+                        (
+                            (LAYOUT[i][j] == LAYOUT[i+1][j+2])&&
+                            (LAYOUT[i+1][j+2] == LAYOUT[i+2][j+4])&&
+                            (LAYOUT[i+2][j+4] == LAYOUT[i+3][j+6])
+                        )
+                    )
+                    return true;
+            }
+        }
+        for(int i = 0; i < 3; i++){
+            for(int j = 7; j < 15; j += 2){
+                if(
+                    (LAYOUT[i][j] != LAYOUT_EMPTY_ID)&&
+                    (LAYOUT[i+1][j-2] != LAYOUT_EMPTY_ID)&&
+                    (LAYOUT[i+2][j-4] != LAYOUT_EMPTY_ID)&&
+                    (LAYOUT[i+3][j-6] !=LAYOUT_EMPTY_ID)&&
+                        (
+                            (LAYOUT[i][j] == LAYOUT[i+1][j-2])&&
+                            (LAYOUT[i+1][j-2] == LAYOUT[i+2][j-4])&&
+                            (LAYOUT[i+2][j-4] == LAYOUT[i+3][j-6])
+                        )
+                    )
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     *
+     */
+    private static void printWinner() {
+        swapTurn();
+        String playerName = getPlayerName();
+        System.out.printf(WINNER_MSG, playerName);
+    }
+
+    /**
+     *
+     * @return
+     */
+    private static String getPlayerName() {
+        return  (TURN == YELLOW_PLAYER_ID)? YELLOW_PLAYER_NAME: RED_PLAYER_NAME;
+    }
 }
 
 
