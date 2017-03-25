@@ -106,49 +106,51 @@ public class ConnectFour {
     }
 
     /**
-     *
+     * This method prompts the user for a move.
      */
     private static void promptForMove() {
 
         int move;
-        String playerName = getPlayerName();
 
-        // 1. Prompt for a move until the user entered a valid move.
+        // 1. Prompt for a move until the user enter a valid move.
         do {
-            System.out.println(String.format(MOVE_MSG, playerName));
+            System.out.println(String.format(MOVE_MSG, getPlayerName()));
             move = scanner.nextInt();
         } while (!isValidMove(move));
 
-        setMove(move);
+        // 2. submit the move to the layout
+        submitMove(move);
     }
 
     /**
-     * Checks if the entered move is valid.
+     * This method checks if the entered move is valid.
      *
      * @param move  Move to be evaluated.
      * @return      If the move is valid or not.
      */
     private static boolean isValidMove(int move) {
 
+        // 1. Check if the move is within the column range.
+        // TODO check the if it's within the row range.
         boolean isValidMove = (move >= 0 && move <= 6);
 
-        if(!isValidMove)
-            System.out.println(INVALID_MOVE_MSG);
+        // 2. If It's an invalid move, prints a message.
+        if(!isValidMove) System.out.println(INVALID_MOVE_MSG);
 
         return isValidMove;
     }
 
     /**
      *
-     * @param playerMove
+     * @param move
      */
-    private static void setMove(int playerMove){
+    private static void submitMove(int move){
 
-        playerMove = 2 * playerMove + 1;
+        move = 2 * move + 1;
 
         for(int row = 5; row >= 0; row--) {
-            if(LAYOUT[row][playerMove] == LAYOUT_EMPTY_ID){
-                LAYOUT[row][playerMove] = (TURN == YELLOW_PLAYER_ID)? YELLOW_PLAYER_ID: RED_PLAYER_ID;
+            if(LAYOUT[row][move] == LAYOUT_EMPTY_ID){
+                LAYOUT[row][move] = (TURN == YELLOW_PLAYER_ID)? YELLOW_PLAYER_ID: RED_PLAYER_ID;
                 break;
             }
         }
