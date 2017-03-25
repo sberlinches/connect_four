@@ -168,6 +168,7 @@ public class ConnectFour {
      * @return
      */
     private static boolean isWinner() {
+        // TODO: Each of these methods must submit with positions are the winners.
         return (checkHorizontal() || checkVertical() || checkDiagonal());
     }
 
