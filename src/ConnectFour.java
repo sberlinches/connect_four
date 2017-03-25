@@ -48,7 +48,7 @@ public class ConnectFour {
 
         for(int[] row: layout) {
             for(int j = 0; j < row.length; j++){
-                row[j] = (j % 2 == 0)? LAYOUT_LINE_ID: LAYOUT_EMPTY_ID;
+                row[j] = (isEven(j))? LAYOUT_LINE_ID: LAYOUT_EMPTY_ID;
             }
         }
 
@@ -273,6 +273,15 @@ public class ConnectFour {
      */
     private static String getPlayerName() {
         return  (TURN == YELLOW_PLAYER_ID)? YELLOW_PLAYER_NAME: RED_PLAYER_NAME;
+    }
+
+    /**
+     *
+     * @param num
+     * @return
+     */
+    private static boolean isEven(int num) {
+        return (num % 2 == 0);
     }
 }
 
