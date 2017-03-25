@@ -94,10 +94,10 @@ public class ConnectFour {
                         System.out.print(LAYOUT_LINE_SIGN);
                         break;
                     case YELLOW_PLAYER_ID:
-                        System.out.print(YELLOW_PLAYER_SIGN);
+                        System.out.print(colorize(YELLOW_PLAYER_SIGN, YELLOW_PLAYER_NAME));
                         break;
                     case RED_PLAYER_ID:
-                        System.out.print(RED_PLAYER_SIGN);
+                        System.out.print(colorize(RED_PLAYER_SIGN, RED_PLAYER_NAME));
                         break;
                 }
             }
@@ -280,6 +280,31 @@ public class ConnectFour {
      */
     private static boolean isEven(int num) {
         return (num % 2 == 0);
+    }
+
+    /**
+     *
+     * @param input
+     * @param color
+     * @return
+     */
+    private static String colorize(char input, String color) {
+
+        int colorId;
+
+        switch (color) {
+            case "red":
+                colorId = 31;
+                break;
+            case "yellow":
+            default:
+                colorId = 33;
+        }
+
+        String clearFormat  = (char)27 + "[" + 0 + "m";
+        String addColor     = (char)27 + "[" + colorId + "m";
+
+        return addColor + input + clearFormat;
     }
 }
 
