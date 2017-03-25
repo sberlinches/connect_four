@@ -119,7 +119,7 @@ public class ConnectFour {
             move = scanner.nextInt();
         } while (!isValidMove(move));
 
-        setMove(move, TURN);
+        setMove(move);
     }
 
     /**
@@ -141,15 +141,14 @@ public class ConnectFour {
     /**
      *
      * @param playerMove
-     * @param turn
      */
-    private static void setMove(int playerMove, int turn){
+    private static void setMove(int playerMove){
 
         playerMove = 2 * playerMove + 1;
 
         for(int row = 5; row >= 0; row--) {
             if(LAYOUT[row][playerMove] == LAYOUT_EMPTY_ID){
-                LAYOUT[row][playerMove] = (turn == YELLOW_PLAYER_ID)? YELLOW_PLAYER_ID: RED_PLAYER_ID;
+                LAYOUT[row][playerMove] = (TURN == YELLOW_PLAYER_ID)? YELLOW_PLAYER_ID: RED_PLAYER_ID;
                 break;
             }
         }
