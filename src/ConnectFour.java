@@ -230,6 +230,7 @@ public class ConnectFour {
      * @return True if there are four consecutive IDs of the same player.
      */
     private static boolean checkRows() {
+
         // 1. Iterates over all matrix rows.
         for(int row = 0; row < 6; row++) {
             // 1.2. Iterates over the matrix columns, except the ones with pipes (those are odd).
@@ -262,6 +263,7 @@ public class ConnectFour {
      * @return True if there are four consecutive IDs of the same player.
      */
     private static boolean checkColumns() {
+
         // 1. Iterates over the matrix rows.
         // The iteration must at the 2th time due the if condition (overflow).
         for(int row = 0; row <= 2; row++) {
@@ -294,6 +296,7 @@ public class ConnectFour {
      * @return True if there are four consecutive IDs of the same player.
      */
     private static boolean checkDiagonals() {
+
         // Diagonal from bottom to left.
         // 1. Iterates over the matrix rows.
         // The iteration must at the 2th time due the if condition (overflow).
@@ -319,6 +322,7 @@ public class ConnectFour {
                 }
             }
         }
+
         // Diagonal from bottom to right.
         // 1. Iterates over the matrix rows.
         // The iteration must at the 2th time due the if condition (overflow).
@@ -408,5 +412,3 @@ public class ConnectFour {
         return addColor + input + clearFormat;
     }
 }
-
-
