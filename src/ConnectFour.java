@@ -33,6 +33,7 @@ public class ConnectFour {
     private static final String WINNER_MSG              = "Congratulations, the %s player wins!!!";
     private static Scanner scanner                      = new Scanner(System.in);
     private static int[][] MATRIX                       = createMatrix();
+    private static int[] COORDINATES                    = new int[2];
     private static int TURN                             = whoIsFirst();
 
     /**
@@ -130,33 +131,29 @@ public class ConnectFour {
     }
 
     /**
-     * This method prompts the user for a move.
+     * This method prompts the user for a column.
      */
     private static void promptForMove() {
 
-        int move;
-
-        // 1. Prompt for a move until the user enter a valid move.
+        // 1. Prompt for a move until the user enter a valid column.
         do {
             System.out.println(String.format(MOVE_MSG, COLUMNS - 1, getPlayerName()));
-            move = scanner.nextInt();
-        } while (!isValidMove(move));
+        } while (!isValidMove(scanner.nextInt()));
 
-        // 2. submit the move to the matrix.
-        submitMove(move);
+        // 2. submit the coordinates to the matrix.
+        submitMove();
     }
 
     /**
      * This method checks if the entered move is valid.
      *
-     * @param move  Move to be evaluated.
+     * @param move  The move to be evaluated.
      * @return      If the move is valid or not.
      */
     private static boolean isValidMove(int move) {
 
-        // 1. Check if the move is within the column range.
-        // TODO check the if it's within the row range.
-        boolean isValidMove = (move >= 0 && move < COLUMNS);
+        // 1. Check if the move is within the column and row range.
+        boolean isValidMove = (isValidColumn(move) && isValidRow(move));
 
         // 2. If It's an invalid move, prints a message.
         if(!isValidMove) System.out.println(INVALID_MOVE_MSG);
@@ -165,25 +162,48 @@ public class ConnectFour {
     }
 
     /**
-     * This method submits the introduced move into its position on the matrix.
+     * This method checks and returns if the move is within the column range.
      *
-     * @param move Introduced move.
+     * @param col   The column to be evaluated.
+     * @return      True if the move is within the column range.
      */
-    private static void submitMove(int move){
+    private static boolean isValidColumn(int col) {
+        return (col >= 0 && col < COLUMNS);
+    }
 
-        // 1. Adjusts the move to fit with the whitespaces of the matrix
+    /**
+     * This method checks and returns if the move is within the row range.
+     *
+     * @param col   The column to be evaluated.
+     * @return      True if the move is within the row range.
+     */
+    private static boolean isValidRow(int col) {
+
+        // 1. Adjusts the col to fit with the whitespaces of the matrix
         // move = 0 * 2 + 1 = 1
         // [1, X, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
-        move = move * 2 + 1;
+        col = col * 2 + 1;
 
-        // 2. Iterates from the bottom of the matrix to the top
+        // 1. Iterates from the bottom of the matrix to the top
         for(int row = ROWS - 1; row >= 0; row--) {
-            // 2.1 If the requested position is empty, fill it with the current player ID, and stop the iteration.
-            if(MATRIX[row][move] == MATRIX_EMPTY_ID){
-                MATRIX[row][move] = getPlayerID();
-                break;
+            // 2.1 If there's a position empty in that column, it stores the coordinates and returns true.
+            if(MATRIX[row][col] == MATRIX_EMPTY_ID) {
+                COORDINATES[0] = row;
+                COORDINATES[1] = col;
+                return true;
             }
         }
+        return false;
+    }
+
+    /**
+     * This method submits the player ID to such coordinates.
+     */
+    private static void submitMove(){
+        int row = COORDINATES[0];
+        int col = COORDINATES[1];
+
+        MATRIX[row][col] = getPlayerID();
     }
 
     /**
@@ -200,7 +220,7 @@ public class ConnectFour {
      * @return True is the current player is winner.
      */
     private static boolean isWinner() {
-        // TODO: Each of these methods must submit with positions are the winners.
+        // TODO: Each of these methods must submit which positions are the winners.
         return (checkRows() || checkColumns() || checkDiagonals());
     }
 
