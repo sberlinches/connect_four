@@ -136,12 +136,22 @@ public class ConnectFour {
      */
     private static void promptForMove() {
 
-        // 1. Prompt for a move until the user enter a valid column.
+        int move = -1;
+
+        // 1. Prompts for a move until the user enter a valid column.
         do {
             System.out.println(String.format(MOVE_MSG, COLUMNS - 1, getPlayerName()));
-        } while (!isValidMove(scanner.nextInt()));
 
-        // 2. submit the coordinates to the matrix.
+            // 1.1 Prevents the exception just scanning the input.
+            if(scanner.hasNextInt())
+                move = scanner.nextInt();
+            else
+                scanner.next();
+
+
+        } while (!isValidMove(move));
+
+        // 2. submits the coordinates to the matrix.
         submitMove();
     }
 
