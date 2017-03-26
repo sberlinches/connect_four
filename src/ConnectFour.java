@@ -25,7 +25,7 @@ public class ConnectFour {
     private static final char MATRIX_PIPE_DECO          = '|';
     private static final char YELLOW_PLAYER_DECO        = 'Y';
     private static final char RED_PLAYER_DECO           = 'R';
-    private static final char WINNER_PLAYER_DECO        = '$';
+    private static final char WINNER_DECO               = '$';
     private static final String YELLOW_PLAYER_NAME      = "yellow";
     private static final String RED_PLAYER_NAME         = "red";
     private static final String MOVE_MSG                = "Select an empty column (0-%d) to drop a %s disk into:";
@@ -122,7 +122,8 @@ public class ConnectFour {
                         System.out.print(colorize(RED_PLAYER_DECO, RED_PLAYER_NAME));
                         break;
                     case WINNER_ID:
-                        System.out.print(WINNER_PLAYER_DECO);
+                        // 2.1. Prints the special decoration, and it's colorize depending on the current shift.
+                        System.out.print(colorize(WINNER_DECO, (TURN == YELLOW_PLAYER_ID)? YELLOW_PLAYER_NAME: RED_PLAYER_NAME));
                         break;
                 }
             }
