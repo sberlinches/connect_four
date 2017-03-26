@@ -7,7 +7,7 @@ import java.util.Scanner;
  * next available space within the column. The objective of the game is to connect four of one’s own discs of the same
  * color next to each other vertically, horizontally, or diagonally before your opponent.
  *
- * @author  Ayaka Adachi [ID:, Sec:005]
+ * @author  Ayaka Adachi [ID:100225327, Sec:005]
  * @author  Sergio Berlinches [ID:100291288, Sec:005]
  * @since   2017-03-25
  */
