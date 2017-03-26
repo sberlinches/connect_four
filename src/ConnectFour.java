@@ -220,92 +220,126 @@ public class ConnectFour {
      * @return True is the current player is winner.
      */
     private static boolean isWinner() {
-        // TODO: Each of these methods must submit which positions are the winners.
         return (checkRows() || checkColumns() || checkDiagonals());
     }
 
     /**
-     * This method check every row, looking for four consecutive IDs of the same player.
+     * This method checks every row, looking for four consecutive IDs of the same player.
      *
      * @return True if there are four consecutive IDs of the same player.
      */
     private static boolean checkRows() {
-        for(int row = 0; row < ROWS; row++){
-            for(int col = 0; col < COLUMNS; col += 2){
+        // 1. Iterates over all matrix rows.
+        for(int row = 0; row < 6; row++) {
+            // 1.2. Iterates over the matrix columns, except the ones with pipes (those are odd).
+            // The iteration must at the 7th time due the if condition (overflow).
+            for(int col = 1; col <= 7; col += 2){
+                // 1.2.1. Checks if the next four columns has the same value as the current one,
+                // and they are not empty.
                 if(
-                    (MATRIX[row][col+1] != MATRIX_EMPTY_ID)&&
-                    (MATRIX[row][col+3] != MATRIX_EMPTY_ID)&&
-                    (MATRIX[row][col+5] != MATRIX_EMPTY_ID)&&
-                    (MATRIX[row][col+7] != MATRIX_EMPTY_ID)&&
-                    (
-                        (MATRIX[row][col+1] == MATRIX[row][col+3])&&
-                        (MATRIX[row][col+3] == MATRIX[row][col+5])&&
-                        (MATRIX[row][col+5] == MATRIX[row][col+7])
-                    ))
+                    ((MATRIX[row][col] == MATRIX[row][col+2])&&(MATRIX[row][col+2] != MATRIX_EMPTY_ID))&&
+                    ((MATRIX[row][col] == MATRIX[row][col+4])&&(MATRIX[row][col+4] != MATRIX_EMPTY_ID))&&
+                    ((MATRIX[row][col] == MATRIX[row][col+6])&&(MATRIX[row][col+6] != MATRIX_EMPTY_ID))
+                ) {
+                    // 1.2.2. If there's four consecutive values:
+                    // Changes the value of the affected positions in order to print them in a different style.
+                    // Returns true.
+                    MATRIX[row][col]    = WINNER_ID;
+                    MATRIX[row][col+2]  = WINNER_ID;
+                    MATRIX[row][col+4]  = WINNER_ID;
+                    MATRIX[row][col+6]  = WINNER_ID;
                     return true;
+                }
             }
         }
         return false;
     }
 
     /**
-     * This method check every column, looking for four consecutive IDs of the same player.
+     * This method checks every column, looking for four consecutive IDs of the same player.
      *
      * @return True if there are four consecutive IDs of the same player.
      */
     private static boolean checkColumns() {
-        for(int col = 1; col < 15; col += 2){
-            for(int row = 0; row < 3; row++){
+        // 1. Iterates over the matrix rows.
+        // The iteration must at the 2th time due the if condition (overflow).
+        for(int row = 0; row <= 2; row++) {
+            // 1.2. Iterates over the matrix columns, except the ones with pipes (those are odd).
+            for(int col = 1; col <= 13; col += 2){
+                // 1.2.1. Checks if the same column in the four rows ahead has the same value as the current one,
+                // and they are not empty.
                 if(
-                    (MATRIX[row][col] != MATRIX_EMPTY_ID)&&
-                    (MATRIX[row+1][col] != MATRIX_EMPTY_ID)&&
-                    (MATRIX[row+2][col] != MATRIX_EMPTY_ID)&&
-                    (MATRIX[row+3][col] != MATRIX_EMPTY_ID)&&
-                    (
-                        (MATRIX[row][col] == MATRIX[row+1][col])&&
-                        (MATRIX[row+1][col] == MATRIX[row+2][col])&&
-                        (MATRIX[row+2][col] == MATRIX[row+3][col])
-                    ))
+                    ((MATRIX[row][col] == MATRIX[row+1][col])&&(MATRIX[row+1][col] != MATRIX_EMPTY_ID))&&
+                    ((MATRIX[row][col] == MATRIX[row+2][col])&&(MATRIX[row+2][col] != MATRIX_EMPTY_ID))&&
+                    ((MATRIX[row][col] == MATRIX[row+3][col])&&(MATRIX[row+3][col] != MATRIX_EMPTY_ID))
+                ) {
+                    // 1.2.2. If there's four consecutive values:
+                    // Changes the value of the affected positions in order to print them in a different style.
+                    // Returns true.
+                    MATRIX[row][col]    = WINNER_ID;
+                    MATRIX[row+1][col]  = WINNER_ID;
+                    MATRIX[row+2][col]  = WINNER_ID;
+                    MATRIX[row+3][col]  = WINNER_ID;
                     return true;
+                }
             }
         }
         return false;
     }
 
     /**
-     * This method check every diagonal, looking for four consecutive IDs of the same player.
+     * This method checks every diagonal, looking for four consecutive IDs of the same player.
      *
      * @return True if there are four consecutive IDs of the same player.
      */
     private static boolean checkDiagonals() {
-        for(int row = 0; row < 3; row++){
-            for(int col = 1; col < 9; col += 2){
+        // Diagonal from bottom to left.
+        // 1. Iterates over the matrix rows.
+        // The iteration must at the 2th time due the if condition (overflow).
+        for(int row = 0; row <= 2; row++) {
+            // 1.2. Iterates over the matrix columns, except the ones with pipes (those are odd).
+            // The iteration must at the 7th time due the if condition (overflow).
+            for(int col = 1; col <= 7; col += 2){
                 if(
-                    (MATRIX[row][col] != MATRIX_EMPTY_ID)&&
-                    (MATRIX[row+1][col+2] != MATRIX_EMPTY_ID)&&
-                    (MATRIX[row+2][col+4] != MATRIX_EMPTY_ID)&&
-                    (MATRIX[row+3][col+6] != MATRIX_EMPTY_ID)&&
-                    (
-                        (MATRIX[row][col] == MATRIX[row+1][col+2])&&
-                        (MATRIX[row+1][col+2] == MATRIX[row+2][col+4])&&
-                        (MATRIX[row+2][col+4] == MATRIX[row+3][col+6])
-                    ))
+                    // 1.2.1. Checks if the next four columns in the four rows ahead has the same value as the current one,
+                    // and they are not empty.
+                    ((MATRIX[row][col] == MATRIX[row+1][col+2])&&(MATRIX[row+1][col+2] != MATRIX_EMPTY_ID))&&
+                    ((MATRIX[row][col] == MATRIX[row+2][col+4])&&(MATRIX[row+2][col+4] != MATRIX_EMPTY_ID))&&
+                    ((MATRIX[row][col] == MATRIX[row+3][col+6])&&(MATRIX[row+3][col+6] != MATRIX_EMPTY_ID))
+                ) {
+                    // 1.2.2. If there's four consecutive values:
+                    // Changes the value of the affected positions in order to print them in a different style.
+                    // Returns true.
+                    MATRIX[row][col]        = WINNER_ID;
+                    MATRIX[row+1][col+2]    = WINNER_ID;
+                    MATRIX[row+2][col+4]    = WINNER_ID;
+                    MATRIX[row+3][col+6]    = WINNER_ID;
                     return true;
+                }
             }
         }
-        for(int row = 0; row < 3; row++){
-            for(int col = COLUMNS; col < COLUMNS_AND_PIPES; col += 2){
+        // Diagonal from bottom to right.
+        // 1. Iterates over the matrix rows.
+        // The iteration must at the 2th time due the if condition (overflow).
+        for(int row = 0; row <= 2; row++) {
+            // 1.2. Iterates over the matrix columns, except the ones with pipes (those are odd).
+            for(int col = 7; col <= 13; col += 2){
                 if(
-                    (MATRIX[row][col] != MATRIX_EMPTY_ID)&&
-                    (MATRIX[row+1][col-2] != MATRIX_EMPTY_ID)&&
-                    (MATRIX[row+2][col-4] != MATRIX_EMPTY_ID)&&
-                    (MATRIX[row+3][col-6] !=MATRIX_EMPTY_ID)&&
-                    (
-                        (MATRIX[row][col] == MATRIX[row+1][col-2])&&
-                        (MATRIX[row+1][col-2] == MATRIX[row+2][col-4])&&
-                        (MATRIX[row+2][col-4] == MATRIX[row+3][col-6])
-                    ))
+                    // 1.2.1. Checks if the previous four columns in the four rows ahead has the same value as the current one,
+                    // and they are not empty.
+                    ((MATRIX[row][col] == MATRIX[row+1][col-2])&&(MATRIX[row+1][col-2] != MATRIX_EMPTY_ID))&&
+                    ((MATRIX[row][col] == MATRIX[row+2][col-4])&&(MATRIX[row+2][col-4] != MATRIX_EMPTY_ID))&&
+                    ((MATRIX[row][col] == MATRIX[row+3][col-6])&&(MATRIX[row+3][col-6] != MATRIX_EMPTY_ID))
+                ) {
+                    // 1.2.2. If there's four consecutive values:
+                    // Changes the value of the affected positions in order to print them in a different style.
+                    // Returns true.
+                    MATRIX[row][col]        = WINNER_ID;
+                    MATRIX[row+1][col-2]    = WINNER_ID;
+                    MATRIX[row+2][col-4]    = WINNER_ID;
+                    MATRIX[row+3][col-6]    = WINNER_ID;
                     return true;
+                }
             }
         }
         return false;
