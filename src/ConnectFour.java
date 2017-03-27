@@ -9,7 +9,7 @@ import java.util.Scanner;
  *
  * @author  Ayaka Adachi [ID:100225327, Sec:005]
  * @author  Sergio Berlinches [ID:100291288, Sec:005]
- * @since   2017-03-25
+ * @since   2017-03-26
  */
 public class ConnectFour {
 
@@ -47,6 +47,9 @@ public class ConnectFour {
             swapTurn();
         } while(!isWinner());
 
+        // Before exiting the loop the turn has been swapped,
+        // but the real winner is the previous one.
+        // That's why It's have to be swapped again.
         swapTurn();
         printMatrix();
         printWinner();
